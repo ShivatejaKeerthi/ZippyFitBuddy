@@ -1,0 +1,278 @@
+/* Font imports - add these to your CSS file or HTML head */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+.footer {
+    background: linear-gradient(to right, #0f1724, #1a2234);
+    color: white;
+    padding: 60px 20px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Subtle background pattern */
+.footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-brand {
+    max-width: 280px;
+    text-align: left;
+}
+
+.footer-brand h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    background: linear-gradient(90deg, #ffffff, #b0b3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.footer-brand p {
+    font-size: 15px;
+    color: #b0b3b8;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-weight: 300;
+}
+
+.footer-icons {
+    margin-top: 20px;
+    display: flex;
+    gap: 16px;
+}
+
+.footer-icons a {
+    color: white;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.footer-icons a:hover {
+    color: #121826;
+    background: #1db954;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+}
+
+.footer-links {
+    text-align: left;
+}
+
+.footer-links h3 {
+    font-size: 18px;
+    margin-bottom: 18px;
+    position: relative;
+    padding-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.footer-links h3::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: #1db954;
+    border-radius: 2px;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links ul li {
+    margin-bottom: 12px;
+    transition: transform 0.2s ease;
+}
+
+.footer-links ul li:hover {
+    transform: translateX(5px);
+}
+
+.footer-links ul li a {
+    color: #b0b3b8;
+    text-decoration: none;
+    font-size: 15px;
+    transition: 0.3s;
+    position: relative;
+    padding-left: 0;
+    display: inline-block;
+    font-weight: 400;
+}
+
+.footer-links ul li a::before {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #1db954;
+    transition: width 0.3s ease;
+}
+
+.footer-links ul li a:hover {
+    color: white;
+}
+
+.footer-links ul li a:hover::before {
+    width: 100%;
+}
+
+.footer-bottom {
+    margin-top: 50px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    font-size: 14px;
+    color: #b0b3b8;
+    width: 100%;
+    font-weight: 300;
+}
+
+/* Newsletter section - add this if you want a newsletter */
+.footer-newsletter {
+    text-align: left;
+    max-width: 320px;
+}
+
+.footer-newsletter h3 {
+    font-size: 18px;
+    margin-bottom: 18px;
+    position: relative;
+    padding-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.footer-newsletter h3::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: #1db954;
+    border-radius: 2px;
+}
+
+.footer-newsletter p {
+    font-size: 15px;
+    color: #b0b3b8;
+    margin-bottom: 15px;
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+.footer-newsletter form {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-newsletter input {
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+}
+
+.footer-newsletter input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 300;
+}
+
+.footer-newsletter button {
+    padding: 12px 20px;
+    background: #1db954;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.3px;
+}
+
+.footer-newsletter button:hover {
+    background: #1ed760;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+}
+
+/* Make it responsive */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+    }
+    
+    .footer-brand, .footer-links, .footer-newsletter {
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .footer-icons {
+        justify-content: center;
+    }
+    
+    .footer-links h3::after, .footer-newsletter h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .footer-newsletter form {
+        flex-direction: column;
+    }
+    
+    .footer-links ul li:hover {
+        transform: none;
+    }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .footer {
+        background: linear-gradient(to right, #0a0f16, #121826);
+    }
+}
