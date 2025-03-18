@@ -1,214 +1,253 @@
-/* Goals.css - Stunning styles for the fitness goals component */
-
+/* Goals.css */
 .goal-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 16px;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Question Box Styles */
+/* Question UI */
 .question-box {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2.5rem;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
-  animation: fadeIn 0.5s ease-in-out;
 }
 
 .question-box h2 {
   font-size: 1.8rem;
   margin-bottom: 2rem;
   color: #333;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Options Styles */
 .options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
 }
 
 .options button {
-  background-color: #f8f9fa;
-  border: 2px solid #e9ecef;
+  background: #f5f5f5;
+  border: 2px solid transparent;
   border-radius: 10px;
-  padding: 1rem 0.5rem;
+  padding: 1rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 500;
-  color: #495057;
+  transition: all 0.3s ease;
 }
 
 .options button:hover {
+  background: #e8f4fd;
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  background-color: #e9ecef;
 }
 
 .options button.selected {
-  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  background: #4CAF50;
   color: white;
-  border-color: transparent;
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(37, 117, 252, 0.3);
+  border-color: #388E3C;
+  font-weight: 500;
 }
 
-/* Navigation Buttons */
 .nav-buttons {
   display: flex;
-  justify-content: space-between;
-  margin-top: 2rem;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .nav-buttons button {
-  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  background: #4CAF50;
+  color: white;
   border: none;
   border-radius: 8px;
-  color: white;
-  padding: 0.75rem 1.5rem;
+  padding: 0.8rem 1.5rem;
   font-size: 1rem;
-  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(79, 172, 254, 0.3);
 }
 
 .nav-buttons button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(79, 172, 254, 0.4);
+  background: #388E3C;
 }
 
 .nav-buttons button:disabled {
-  background: linear-gradient(to right, #d3d3d3, #a9a9a9);
+  background: #cccccc;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
 }
 
-.nav-buttons button:first-child {
-  background: linear-gradient(to right, #f6d365 0%, #fda085 100%);
-  box-shadow: 0 4px 10px rgba(246, 211, 101, 0.3);
-}
-
-.nav-buttons button:first-child:hover {
-  box-shadow: 0 6px 15px rgba(246, 211, 101, 0.4);
-}
-
-/* Goal Summary Styles */
+/* Results UI */
 .goal-summary {
-  background-color: white;
+  background: #ffffff;
+  border-radius: 16px;
   padding: 2rem;
-  border-radius: 12px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.plan-title {
+  font-size: 1.8rem;
+  color: #333;
   text-align: center;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
-  animation: scaleIn 0.5s ease-in-out;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
 }
 
-.goal-summary h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  background: linear-gradient(to right, #11998e, #38ef7d);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: none;
-}
-
-/* Plan Content Styles */
-.plan-content {
-  text-align: left;
-  margin-top: 1.5rem;
-}
-
-.generated-plan {
-  background-color: #f8f9fa;
-  padding: 1.5rem;
+.plan-intro {
+  background: #f8f9fa;
+  border-left: 4px solid #4CAF50;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
   border-radius: 8px;
-  margin-bottom: 2rem;
-  border-left: 4px solid #38ef7d;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
-}
-
-.generated-plan p {
-  margin-bottom: 1rem;
+  font-size: 1rem;
   line-height: 1.6;
-  color: #495057;
 }
 
-.generated-plan p:empty {
-  display: none;
+.plan-sections {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.plan-content button {
-  background: linear-gradient(to right, #ff416c, #ff4b2b);
+.plan-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.plan-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.plan-section h3 {
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.section-icon {
+  font-size: 1.4rem;
+  margin-right: 0.75rem;
+}
+
+.plan-section ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.plan-section li {
+  position: relative;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  line-height: 1.5;
+}
+
+.plan-section li::before {
+  content: "•";
+  color: #4CAF50;
+  font-size: 1.2rem;
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+}
+
+.action-button {
+  display: block;
+  background: #4CAF50;
+  color: white;
   border: none;
   border-radius: 8px;
-  color: white;
-  padding: 0.9rem 1.8rem;
+  padding: 1rem 2rem;
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
+  margin: 2rem auto 0;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(255, 65, 108, 0.3);
-  margin: 0 auto;
-  display: block;
 }
 
-.plan-content button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(255, 65, 108, 0.4);
+.action-button:hover {
+  background: #388E3C;
 }
 
 /* Loading State */
-.goal-summary p {
-  font-size: 1.2rem;
-  color: #6c757d;
-  margin: 2rem 0;
+.loading-container {
+  text-align: center;
+  padding: 2rem;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.loading-spinner {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(76, 175, 80, 0.3);
+  border-radius: 50%;
+  border-top-color: #4CAF50;
+  animation: spin 1s ease-in-out infinite;
+  margin: 2rem auto;
 }
 
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-/* Responsive Adjustments */
+/* Error State */
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  background: #fff5f5;
+  border-radius: 8px;
+  border-left: 4px solid #f44336;
+}
+
+.error-message p {
+  color: #d32f2f;
+  margin-bottom: 1.5rem;
+}
+
+.error-message button {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.error-message button:hover {
+  background: #d32f2f;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .plan-sections {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .goal-container {
-    padding: 1.5rem;
-    border-radius: 12px;
+    padding: 1rem;
   }
   
   .question-box, .goal-summary {
     padding: 1.5rem;
   }
   
-  .question-box h2 {
-    font-size: 1.5rem;
-  }
-  
   .options {
     grid-template-columns: 1fr;
-  }
-  
-  .options button {
-    padding: 0.8rem 0.5rem;
-  }
-  
-  .nav-buttons button {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
   }
 }

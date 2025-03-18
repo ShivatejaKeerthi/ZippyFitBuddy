@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Goals.css";
+import { motion } from "framer-motion";
 
 const Goals = () => {
   const navigate = useNavigate();
-  // Fix for Vite apps - only use import.meta.env
   const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_KEY;
 
   const steps = [
@@ -19,6 +19,14 @@ const Goals = () => {
   const [loading, setLoading] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState("");
   const [error, setError] = useState("");
+  const [parsedPlan, setParsedPlan] = useState({
+    title: "",
+    intro: "",
+    workouts: [],
+    diet: [],
+    hydration: [],
+    motivation: []
+  });
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -39,6 +47,117 @@ const Goals = () => {
     setUserGoal({ ...userGoal, [key]: value });
   };
 
+  // Parse AI response into structured sections
+  useEffect(() => {
+    if (generatedPlan) {
+      const parsed = {
+        title: "",
+        intro: "",
+        workouts: [],
+        diet: [],
+        hydration: [],
+        motivation: []
+      };
+
+      // Extract title - look for heading format
+      const titleMatch = generatedPlan.match(/#{1,3}\s*([^\n]+)/);
+      if (titleMatch) {
+        parsed.title = titleMatch[1].trim();
+      } else {
+        // Fallback title based on user selections
+        parsed.title = `${userGoal.duration} ${userGoal.goalType} Plan (${userGoal.workoutDays}, ${userGoal.diet})`;
+      }
+
+      // Extract intro - typically first paragraph after title
+      const lines = generatedPlan.split('\n');
+      let currentSection = "intro";
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        if (line === "") continue;
+        
+        // Check for section headers
+        if (line.match(/workout|exercise|training/i) && line.match(/[:#*]/)) {
+          currentSection = "workouts";
+          continue;
+        } else if (line.match(/diet|nutrition|eating|food|meal/i) && line.match(/[:#*]/)) {
+          currentSection = "diet";
+          continue;
+        } else if (line.match(/hydration|water|drink/i) && line.match(/[:#*]/)) {
+          currentSection = "hydration";
+          continue;
+        } else if (line.match(/motivation|tips|advice|encourage/i) && line.match(/[:#*]/)) {
+          currentSection = "motivation";
+          continue;
+        }
+        
+        // Skip markdown headings
+        if (line.startsWith("#")) continue;
+        
+        // Add content to appropriate section
+        if (currentSection === "intro") {
+          parsed.intro += line + " ";
+        } else {
+          // Clean up bullet points and formatting
+          const cleanedLine = line.replace(/^[-*•]|\*\*|__/g, "").trim();
+          if (cleanedLine) {
+            parsed[currentSection].push(cleanedLine);
+          }
+        }
+      }
+      
+      // Clean up intro
+      parsed.intro = parsed.intro.trim();
+      
+      // Ensure we have content in each section
+      if (parsed.workouts.length === 0) {
+        const workoutContent = extractSection(generatedPlan, "workout");
+        if (workoutContent) {
+          parsed.workouts = workoutContent.split('\n')
+            .filter(line => line.trim() !== "")
+            .map(line => line.replace(/^[-*•]|\*\*|__/g, "").trim());
+        }
+      }
+      
+      if (parsed.diet.length === 0) {
+        const dietContent = extractSection(generatedPlan, "diet");
+        if (dietContent) {
+          parsed.diet = dietContent.split('\n')
+            .filter(line => line.trim() !== "")
+            .map(line => line.replace(/^[-*•]|\*\*|__/g, "").trim());
+        }
+      }
+      
+      if (parsed.hydration.length === 0) {
+        const hydrationContent = extractSection(generatedPlan, "hydration");
+        if (hydrationContent) {
+          parsed.hydration = hydrationContent.split('\n')
+            .filter(line => line.trim() !== "")
+            .map(line => line.replace(/^[-*•]|\*\*|__/g, "").trim());
+        }
+      }
+      
+      if (parsed.motivation.length === 0) {
+        const motivationContent = extractSection(generatedPlan, "motivation");
+        if (motivationContent) {
+          parsed.motivation = motivationContent.split('\n')
+            .filter(line => line.trim() !== "")
+            .map(line => line.replace(/^[-*•]|\*\*|__/g, "").trim());
+        }
+      }
+      
+      setParsedPlan(parsed);
+    }
+  }, [generatedPlan, userGoal]);
+
+  // Helper function to extract sections from raw text
+  const extractSection = (text, keyword) => {
+    const regex = new RegExp(`(?:${keyword}s?|${keyword.charAt(0).toUpperCase() + keyword.slice(1)}s?)(?:[:\\-]|\\s+\\*\\*|\\s+__)?([\\s\\S]*?)(?=\\n\\s*(?:${keyword}|workout|diet|hydration|motivation|$))`, 'i');
+    const match = text.match(regex);
+    return match ? match[1].trim() : "";
+  };
+
   const generatePlan = async () => {
     setLoading(true);
     setError("");
@@ -54,20 +173,19 @@ const Goals = () => {
     `;
 
     try {
-      // Check if API key is available
       if (!GEMINI_API_KEY) {
         throw new Error("API key is missing. Please add VITE_GEMINI_KEY to your .env file and restart the app.");
       }
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=${GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }]
+            contents: [{ role: "user", parts: [{ text: prompt }] }]
           })
         }
       );
@@ -79,8 +197,11 @@ const Goals = () => {
 
       const data = await response.json();
 
+      // Updated response parsing for Gemini 1.5 Flash
       if (data && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
         setGeneratedPlan(data.candidates[0].content.parts[0].text);
+      } else if (data.contents && data.contents[0]?.parts?.[0]?.text) {
+        setGeneratedPlan(data.contents[0].parts[0].text);
       } else {
         throw new Error("No valid response from AI service");
       }
@@ -97,55 +218,163 @@ const Goals = () => {
     navigate("/workout-tracker");
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.2
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 }
+    }
+  };
+
+  // Section component for the plan
+  const PlanSection = ({ title, items, icon }) => {
+    if (!items || items.length === 0) return null;
+    
+    return (
+      <motion.div 
+        className="plan-section"
+        variants={itemVariants}
+      >
+        <h3>
+          <span className="section-icon">{icon}</span>
+          {title}
+        </h3>
+        <ul>
+          {items.map((item, idx) => (
+            <motion.li 
+              key={idx}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 * idx }}
+            >
+              {item}
+            </motion.li>
+          ))}
+        </ul>
+      </motion.div>
+    );
+  };
+
   return (
     <div className="goal-container">
       {currentStep < steps.length ? (
-        <div className="question-box">
+        <motion.div 
+          className="question-box"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <h2>{steps[currentStep].question}</h2>
           <div className="options">
-            {steps[currentStep].options.map((option) => (
-              <button
+            {steps[currentStep].options.map((option, index) => (
+              <motion.button
                 key={option}
                 onClick={() => handleSelect(steps[currentStep].key, option)}
                 className={userGoal[steps[currentStep].key] === option ? "selected" : ""}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 {option}
-              </button>
+              </motion.button>
             ))}
           </div>
           <div className="nav-buttons">
-            {currentStep > 0 && <button onClick={handlePrev}>Previous</button>}
-            <button 
+            {currentStep > 0 && (
+              <motion.button 
+                onClick={handlePrev}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Previous
+              </motion.button>
+            )}
+            <motion.button 
               onClick={handleNext}
               disabled={!userGoal[steps[currentStep].key]}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {currentStep === steps.length - 1 ? "Generate Plan" : "Next"}
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
       ) : (
-        <div className="goal-summary">
-          <h2>🏆 Your Personalized Fitness Plan</h2>
+        <motion.div 
+          className="goal-summary"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           {loading ? (
-            <p>⏳ Generating your plan...</p>
+            <div className="loading-container">
+              <h2>⏳ Generating your plan...</h2>
+              <div className="loading-spinner"></div>
+              <p>Creating your personalized fitness journey...</p>
+            </div>
           ) : error ? (
             <div className="error-message">
               <p>⚠️ {error}</p>
-              <button onClick={() => setCurrentStep(steps.length - 1)}>Try Again</button>
+              <motion.button 
+                onClick={() => setCurrentStep(steps.length - 1)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Try Again
+              </motion.button>
             </div>
           ) : generatedPlan ? (
-            <div className="plan-content">
-              <div className="generated-plan">
-                {generatedPlan.split('\n').map((line, index) => (
-                  <p key={index}>{line}</p>
-                ))}
+            <motion.div 
+              className="plan-content"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.h2 variants={itemVariants} className="plan-title">
+                🏆 {parsedPlan.title || "Your Personalized Fitness Plan"}
+              </motion.h2>
+              
+              {parsedPlan.intro && (
+                <motion.div variants={itemVariants} className="plan-intro">
+                  <p>{parsedPlan.intro}</p>
+                </motion.div>
+              )}
+              
+              <div className="plan-sections">
+                <PlanSection title="Workout Recommendations" items={parsedPlan.workouts} icon="🏋️" />
+                <PlanSection title="Dietary Guidelines" items={parsedPlan.diet} icon="🍎" />
+                <PlanSection title="Hydration Tips" items={parsedPlan.hydration} icon="💧" />
+                <PlanSection title="Motivation & Tips" items={parsedPlan.motivation} icon="🚀" />
               </div>
-              <button onClick={handleRedirectToWorkout}>➡️ Go to Workout Tracker</button>
-            </div>
+              
+              <motion.button 
+                onClick={handleRedirectToWorkout}
+                className="action-button"
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                ➡️ Go to Workout Tracker
+              </motion.button>
+            </motion.div>
           ) : (
             <p>No plan available. Please try again.</p>
           )}
-        </div>
+        </motion.div>
       )}
     </div>
   );
